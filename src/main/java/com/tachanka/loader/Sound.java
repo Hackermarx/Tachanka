@@ -1,7 +1,7 @@
 package com.tachanka.loader;
 
-public class Sound extends GenericFile {
-    public Sound(String filePath) {
+class Sound extends GenericFile {
+    Sound(String filePath) {
         super(filePath);
     }
 }
