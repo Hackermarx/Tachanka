@@ -6,17 +6,23 @@ import java.util.HashMap;
 abstract class FileLoader<GenericFile> {
     private int nFiles;
     private int nLoaded;
+    private HashMap<String, GenericFile> map;
 
     public FileLoader() {
         nFiles = 0;
         nLoaded = 0;
     }
 
-    public HashMap<String, GenericFile> load(String dir) {
+    public void load(String dir) {
         File parent = new File(dir);
         nFiles = countFiles(parent);
-        HashMap<String, GenericFile> map = loadFiles(parent);
-        return map;
+
+        HashMap<String, GenericFile> map = new HashMap<>();
+        new Thread(() -> {
+            setMap(loadFiles(parent));
+            int x = 5;
+        }).start();
+
     }
 
     private int countFiles(File parent) {
@@ -41,14 +47,14 @@ abstract class FileLoader<GenericFile> {
         HashMap<String, GenericFile> ret = new HashMap<>();
 
         String[] children = parent.list();
-        File temp;
 
+        File temp;
         for (String filePath : children) {
-            temp = new File(filePath);
+            temp = new File(parent.getPath() + "\\" + filePath);
             if (temp.isDirectory()) {
                 ret.putAll(loadFiles(temp));
             } else {
-                ret.put(filePath, getFile(filePath));
+                ret.put(parent.getPath() + "\\" + filePath, getFile(parent.getPath() + "\\" + filePath));
                 nLoaded++;
             }
         }
@@ -61,4 +67,8 @@ abstract class FileLoader<GenericFile> {
     }
 
     abstract GenericFile getFile(String filePath);
+
+    public void setMap(HashMap<String,GenericFile> map) {
+        this.map = map;
+    }
 }
