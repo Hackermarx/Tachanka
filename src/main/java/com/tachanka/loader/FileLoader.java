@@ -19,7 +19,7 @@ abstract class FileLoader<GenericFile> {
 
         HashMap<String, GenericFile> map = new HashMap<>();
         new Thread(() -> {
-            setMap(loadFiles(parent));
+            setMap(loadFiles(parent, ""));
             int x = 5;
         }).start();
 
@@ -43,7 +43,7 @@ abstract class FileLoader<GenericFile> {
         return ret;
     }
 
-    private HashMap<String, GenericFile> loadFiles(File parent) {
+    private HashMap<String, GenericFile> loadFiles(File parent, String curPath) {
         HashMap<String, GenericFile> ret = new HashMap<>();
 
         String[] children = parent.list();
@@ -52,9 +52,9 @@ abstract class FileLoader<GenericFile> {
         for (String filePath : children) {
             temp = new File(parent.getPath() + "\\" + filePath);
             if (temp.isDirectory()) {
-                ret.putAll(loadFiles(temp));
+                ret.putAll(loadFiles(temp, curPath + "" + temp.getName() + "/"));
             } else {
-                ret.put(parent.getPath() + "\\" + filePath, getFile(parent.getPath() + "\\" + filePath));
+                ret.put(curPath + filePath, getFile(parent.getPath() + "\\" + filePath));
                 nLoaded++;
             }
         }
@@ -64,6 +64,10 @@ abstract class FileLoader<GenericFile> {
 
     public double getProgress() {
         return (double) nLoaded / nFiles;
+    }
+
+    public boolean isDone() {
+        return nLoaded == nFiles;
     }
 
     abstract GenericFile getFile(String filePath);
