@@ -1,7 +1,10 @@
 package com.tachanka.core;
 
+import com.tachanka.io.KeyBoardHandler;
 import com.tachanka.loader.SoundLoader;
 import com.tachanka.loader.TextureLoader;
+import javafx.application.Application;
+import javafx.scene.Scene;
 
 import java.util.Date;
 
@@ -42,6 +45,21 @@ public abstract class Main {
     private SoundLoader soundLoader;
 
     /**
+     * The scene for this application
+     */
+    private Scene scene;
+
+    /**
+     * The actual JavaFX application for this application
+     */
+    private MainApplication application;
+
+    /**
+     * The key handler for this application
+     */
+    private KeyBoardHandler keyBoardHandler;
+
+    /**
      * Default initialises the fps to 30
      */
     public Main() {
@@ -58,11 +76,19 @@ public abstract class Main {
         init();
     }
 
+    /**
+     * Some standard initialisation for the application
+     */
     private void init() {
         this.isRunning = true;
         this.delta = 0;
         this.soundLoader = new SoundLoader();
         this.textureLoader = new TextureLoader();
+
+        this.application = new MainApplication();
+        Application.launch("");
+        this.scene = application.getScene();
+        this.keyBoardHandler = new KeyBoardHandler(scene);
     }
 
     /**
@@ -105,6 +131,30 @@ public abstract class Main {
         } else {
             throw new IllegalArgumentException("yo dumb shit");
         }
+    }
+
+    public double getDelta() {
+        return delta;
+    }
+
+    public TextureLoader getTextureLoader() {
+        return textureLoader;
+    }
+
+    public SoundLoader getSoundLoader() {
+        return soundLoader;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public MainApplication getApplication() {
+        return application;
+    }
+
+    public KeyBoardHandler getKeyBoardHandler() {
+        return keyBoardHandler;
     }
 
     /**
