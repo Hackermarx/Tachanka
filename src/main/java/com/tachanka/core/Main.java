@@ -1,6 +1,7 @@
 package com.tachanka.core;
 
 import com.tachanka.io.KeyBoardHandler;
+import com.tachanka.io.MouseListener;
 import com.tachanka.loader.SoundLoader;
 import com.tachanka.loader.TextureLoader;
 import javafx.application.Application;
@@ -58,6 +59,16 @@ public abstract class Main {
      * The key handler for this application
      */
     private KeyBoardHandler keyBoardHandler;
+
+    /**
+     * The mouse event handler thingie doodler for this
+     * application
+     */
+    private MouseListener mouseListener;
+
+    public void setMouseListener(MouseListener mouseListener) {
+        this.mouseListener = mouseListener;
+    }
 
     /**
      * Default initialises the fps to 30
