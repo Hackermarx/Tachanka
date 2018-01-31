@@ -34,10 +34,6 @@ public class Sprite {
     }
 
     public boolean collidesWith(Sprite other) {
-        if (this.hitbox == null || other.hitbox == null) {
-            return false;
-        } else {
-            return this.hitbox.collidesWith(other.hitbox);
-        }
+        return this.hitbox != null && other.hitbox != null && this.hitbox.collidesWith(other.hitbox) >= 0;
     }
 }

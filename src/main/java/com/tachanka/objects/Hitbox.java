@@ -19,13 +19,56 @@ public class Hitbox {
         polygon.add(newVector);
     }
 
-    public boolean collidesWith(Hitbox hitbox) {
+    public double collidesWith(Hitbox other) {
         setCenter();
         if (!isConvex()) {
             throw new IllegalStateException("Shape not convex; can't check collision");
         }
-        // TODO: Implement Separating Axis Theorem
-        return false;
+
+        ArrayList<Vector2D> normals = this.getNormals();
+        normals.addAll(other.getNormals());
+
+        for (Vector2D p : normals) {
+            // then we find the min and max lengths of the projections onto p
+            double min0 = this.getMinProjectionTo(p);
+            double max0 = this.getMaxProjectionTo(p);
+            double min1 = other.getMinProjectionTo(p);
+            double max1 = other.getMaxProjectionTo(p);
+
+            if (max1 < min0) return max0 - min1;
+            if (max0 < min1) return max1 - min0;
+        }
+        return -1;
+    }
+
+    private double getMaxProjectionTo(Vector2D p) {
+        double ret = Double.MIN_VALUE;
+        double projection;
+        for (int i = 0; i < polygon.size(); i++) {
+            Vector2D cur = polygon.get((i + 1) % polygon.size()).sub(polygon.get(i)).normalize();
+            projection = cur.dot(p);
+            ret = Math.max(projection, ret);
+        }
+        return ret;
+    }
+
+    private double getMinProjectionTo(Vector2D p) {
+        double ret = Double.MAX_VALUE;
+        double projection;
+        for (int i = 0; i < polygon.size(); i++) {
+            Vector2D cur = polygon.get((i + 1) % polygon.size()).sub(polygon.get(i)).normalize();
+            projection = cur.dot(p);
+            ret = Math.min(projection, ret);
+        }
+        return ret;
+    }
+
+    private ArrayList<Vector2D> getNormals() {
+        ArrayList<Vector2D> ret = new ArrayList<>(polygon.size());
+        for (int i = 0; i < polygon.size(); i++) {
+            ret.add(polygon.get((i + 1) % polygon.size()).sub(polygon.get(i)).leftNormal());
+        }
+        return ret;
     }
 
     private boolean isConvex() {

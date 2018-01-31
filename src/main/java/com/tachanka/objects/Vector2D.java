@@ -25,8 +25,12 @@ public class Vector2D {
         return this.x * other.x + this.y * other.y;
     }
 
-    public Vector2D projectTo(Vector2D other) {
-        return other.scale(this.dot(other.normalize()));
+    public Vector2D leftNormal() {
+        return new Vector2D(-y, x);
+    }
+
+    public Vector2D rightNormal() {
+        return new Vector2D(y, -x);
     }
 
     private Vector2D scale(double scalar) {
